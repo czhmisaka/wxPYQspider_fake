@@ -1,61 +1,4 @@
 
-@[TOC](czh的开发笔记 - 微信朋友圈 - 模拟操作)
-
-# 这个爬虫效率极其低下，仅供学习参考使用
-
-## 朋友圈爬虫简介
-模拟人工操作爬取朋友圈数据
-
-## 防喷
-1. 这个代码写的确实很烂，我暂时也没有优化的动力
-
-## 个人要求
-1. 需要会配置path
-2. 需要一定的python基础
-3. 需要有一定的前端调试经验
-4. 然后要有点耐心，这个环境配置确实需要一点时间，我这里也仅提供了win10+安卓的环境配置经验。
-## 环境配置（准备）
-1. node+appium+adb 可以在下面的链接中下载 
-   1. **node** <https://nodejs.org/zh-cn/>
-   2. **adb** <https://www.androiddevtools.cn/> **这个是国内的安卓下载站，记得要找清楚是adb**
-   3. **sdk Manager** <http://114.116.234.77:1234/android-sdk_r24.4.1-windows.zip> **这个是放在我的服务器上的,你也可以自己找**
-   4. **appium** <http://appium.io/> **这个直接去官网上下载就好**
-2. python环境 建议直接使用Anaconda <https://www.anaconda.com/>
-3. 编辑器啥的自己搞定(**vsCode强烈安利**)
-
-## 环境配置（安装）
-1. 安装node(双击安装包即可)
-   1. 安装结束后记得修改源(如下)
-```
-npm config set registry https://registry.npm.taobao.org
-```
-2. 安装appium和adb
-   1. 安装完成后记得配置path,添加一条指向adb文件夹内的路径
-3. 安装sdkManager(双击安装即可)
-4. python环境(**我的源码用的是python3,记得注意版本**)
-
-## 工作原理
-原理很简单，如下
-```mermaid
-	graph LR
-	A(python脚本) --通过端口发送--> B(appium) --转译指令--> C(真机)
-```
-
-## 源码自提
-<https://github.com/czhmisaka/wxPYQspider_fake>
-
-## 源码展示与讲解
-1. 在桌面准备一个 nameList.txt(如下)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021012215015630.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzM4MTE5MjM5,size_16,color_FFFFFF,t_70)
-2. 用usb线（需要稳定性较好，最好是type-C的全功能线）链接手机
-   1. 手机需要打开开发者模式以及usb调试
-3. 在终端中输入abd devices 检查设备是否链接成功
-4. 运行python脚本
-   1. 此时被操作手机中会出现一个新的应用(Appium setting),**需要给这个应用最高权限,以及避免被系统自动关闭(内存优化,后台搞耗电,自启动管理等设置需要调整)**
-5. 重新运行脚本
-
-```python
-
 from appium import webdriver
 import time
 import re
@@ -452,8 +395,3 @@ for xx in nameList:
         
 
 
-
-```
-
-## 后记
-这个博文其实也没有讲的很细,之后再补充
