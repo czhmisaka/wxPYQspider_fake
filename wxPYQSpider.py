@@ -11,6 +11,9 @@ import pathlib
 import sys
 from cv2 import cv2 as cv
 
+
+# 
+
 driver = {}
 
 def imgFormat(path):
@@ -128,7 +131,7 @@ def enter_pengyouquan(name):
     driver.find_element_by_id('com.tencent.mm:id/cj').click()  #点击聊天界面右上角三个小点
     time.sleep(1)
     driver.find_element_by_id('com.tencent.mm:id/f3y').click() #点击头像
-    time.sleep(1)
+    time.sleep(3)
     driver.find_element_by_id('com.tencent.mm:id/coy').click() #点击朋友圈
     time.sleep(1)
     
@@ -306,6 +309,7 @@ for xx in nameList:
         print(nameList,x,'次数',str(num))
         try:
             driver.quit()
+            print('重开')
         except:
             print('开始')
         driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', asd)
@@ -318,12 +322,12 @@ for xx in nameList:
         timeNow = time.strftime("%Y-%m-%d", time.localtime())
         namePath = getDesktopPath()+'\\test\\'+str(x)+str(timeNow)
         mkdirFile(namePath)
-        for x in range(10):
+        for x in range(20):
             swipe_down('','',1000)
             kick(1)
-        for x in range(11):
+        for x in range(21):
             swipe_up2()
-            kick(1)
+            kick(0.5)
         try:
             comeIn = driver.find_element_by_id('com.tencent.mm:id/cpu')
             comeIn.click()
@@ -347,8 +351,26 @@ for xx in nameList:
         #     except:
         #         print('fuck2')
         for y in range(10000):
+            kick()
+            name = str(y)+'_'
+            try:
+                contextObj = driver.find_element_by_class_name('android.widget.TextView')
+                name = contextObj.text.replace('\n', '').replace('\r', '').strip()
+                name = name.replace('\\','')
+                name = name.replace('/',' ')
+                kick()
+                timeObj = driver.find_element_by_id('android:id/text1')
+                timesss = timeObj.text
+                timesss = timesss.replace(':','').strip()
+                print(timesss)
+            except:
+                print('context fail')
+            mkdirFile(namePath+'/'+timesss+name)    
+            maxNum = SaveScreenShot(namePath+'/'+timesss+name)
+            if maxNum == 'max':
+                break
             tap(X(50),Y(50),800)
-            time.sleep(1)
+            kick()
             try:
                 save = driver.find_elements_by_id('com.tencent.mm:id/gam')
             except:
@@ -359,28 +381,7 @@ for xx in nameList:
                         num = num + 1
                         print('当前轮数:'+str(y)+'    已保存图片数量:'+str(num))
                         c.click()
-                        kick()
                         break
-                kick()
-            kick(2)
-            name = str(y)+'_'
-            try:
-                contextObj = driver.find_element_by_class_name('android.widget.TextView')
-                name = contextObj.text.replace('\n', '').replace('\r', '').strip()
-                name = name.replace('\\','')
-                timeObj = driver.find_element_by_id('android:id/text1')
-                timesss = timeObj.text
-                timesss = timesss.replace(':','').strip()
-                print(timesss)
-            except:
-                print('context fail')
-            if name in list:
-                preName
-            mkdirFile(namePath+'/'+timesss+name)    
-            kick()
-            maxNum = SaveScreenShot(namePath+'/'+timesss+name)
-            if maxNum == 'max':
-                break
             kick()
             try:
                 swipe_r2l()
