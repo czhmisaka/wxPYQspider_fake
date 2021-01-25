@@ -266,26 +266,24 @@ def main_saveByName(nameList):
         'platformName':'Android'
     }
 
+class UnSignInerror(RuntimeError):
+    def __init__(self, arg):
+        self.args = arg
+
+
 size = {'width':1,'height':1}
-desired_caps = {
-    'platformName': 'Android',
-    'deviceName': '37KNW18710001152',
-    'platformVersion': '9',
-    'appPackage': 'com.tencent.mm',  # apk包名
-    'appActivity': 'com.tencent.mm.ui.LauncherUI',  # apk的launcherActivity
-    'noReset': 'True',  # 每次运行脚本不用重复输入密码启动微信
-    'unicodeKeyboard': 'True',  # 使用unicodeKeyboard的编码方式来发送字符串
-    'resetKeyboard': 'True'  # 将键盘给隐藏起来
-}
 
 asd = {
     "platformName": "Android",
     "platformVersion": "10",
     "deviceName": "HA19RRAZ",
+    # "deviceName": "e56b0968",
     "appPackage": "com.tencent.mm",
     "appActivity": "com.tencent.mm.ui.LauncherUI",
     "noReset": "true",
-    "automationName":"uiautomator2"
+    "automationName":"uiautomator1",
+    "resetKeyboard":"true",
+    "unicodeKeyboard":"true"
 }
 driver = {}
 pyq = {}
@@ -304,7 +302,8 @@ for xx in nameList:
     try:
         if xx == "":
             continue
-        x = str(xx)
+        x = str(xx.split(' ')[0])
+        offsetTime = xx.split(' ')[1]
         list = []
         print(nameList,x,'次数',str(num))
         try:
@@ -315,11 +314,12 @@ for xx in nameList:
         driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', asd)
         size = getScreenSize()
         kick(5)
-        enter_pengyouquan(x) 
+        enter_pengyouquan(x)
         kick(5)
         # toPYQ()
-        
+
         timeNow = time.strftime("%Y-%m-%d", time.localtime())
+        timeNowList = timeNow.split('-')
         namePath = getDesktopPath()+'\\test\\'+str(x)+str(timeNow)
         mkdirFile(namePath)
         for x in range(20):
@@ -331,25 +331,14 @@ for xx in nameList:
         try:
             comeIn = driver.find_element_by_id('com.tencent.mm:id/cpu')
             comeIn.click()
-            kick()
+            kick(3)
         except:
             try:
                 comeIn = driver.find_element_by_id('com.tencent.mm:id/cpu')
                 comeIn.click()
-                kick()
+                kick(3)
             except:
                 print('clickFail')
-        # try:
-        #     leak = driver.find_element_by_id('com.tencent.mm:id/g95')
-        #     leak.click()
-        #     kick()   
-        # except:
-        #     try:
-        #         leak = driver.find_element_by_id('com.tencent.mm:id/g95')
-        #         leak.click()
-        #         kick()   
-        #     except:
-        #         print('fuck2')
         for y in range(10000):
             kick()
             name = str(y)+'_'
@@ -363,9 +352,31 @@ for xx in nameList:
                 timesss = timeObj.text
                 timesss = timesss.replace(':','').strip()
                 print(timesss)
+                offsetDay = 0
+                if len(str(timesss))<8:
+                    if '昨天' in timesss:
+                        offsetDay = 1
+                    else:
+                        offsetDay = 0
+                else:
+                    checkTime = str(timesss)
+                    checkTime = checkTime.split(' ')[0]
+                    checkTime = checkTime.replace('年','-')
+                    checkTime = checkTime.replace('月','-')
+                    checkTime = checkTime.replace('日','')
+                    timeArray = time.strptime(checkTime, "%Y-%m-%d")
+                    timeStamp = int(time.mktime(timeArray))
+                    timeNowArray = time.strptime(timeNow, "%Y-%m-%d")
+                    timeNowStamp = int(time.mktime(timeNowArray))
+                    print('asd',timeNowStamp,timeStamp,timeNowStamp - timeStamp)
+                    offsetDay = (timeNowStamp - timeStamp)/86400
+                print('zxc',offsetDay,offsetTime)
+                if offsetDay - int(offsetTime) > 0:
+                    break
             except:
                 print('context fail')
-            mkdirFile(namePath+'/'+timesss+name)    
+
+            mkdirFile(namePath+'/'+timesss+name)
             maxNum = SaveScreenShot(namePath+'/'+timesss+name)
             if maxNum == 'max':
                 break
